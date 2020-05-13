@@ -15,6 +15,8 @@
  */
 package io.knotx.junit5.util;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -25,7 +27,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxTestContext;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import org.junit.jupiter.api.Assertions;
 
 public class HoconLoader {
 
@@ -44,7 +45,7 @@ public class HoconLoader {
         }));
     fromHOCON(fileName, vertx, configHandler);
 
-    Assertions.assertTrue(testContext.awaitCompletion(5, TimeUnit.SECONDS));
+    assertTrue(testContext.awaitCompletion(5, TimeUnit.SECONDS));
     if (testContext.failed()) {
       throw testContext.causeOfFailure();
     }
@@ -60,12 +61,10 @@ public class HoconLoader {
       VertxTestContext testContext, Vertx vertx)
       throws Throwable {
     Handler<AsyncResult<JsonObject>> configHandler = testContext
-        .succeeding(config -> testContext.verify(() -> {
-          execution.accept(config);
-        }));
+        .succeeding(config -> testContext.verify(() -> execution.accept(config)));
     fromHOCON(fileName, vertx, configHandler);
 
-    Assertions.assertTrue(testContext.awaitCompletion(5, TimeUnit.MINUTES));
+    assertTrue(testContext.awaitCompletion(5, TimeUnit.SECONDS));
     if (testContext.failed()) {
       throw testContext.causeOfFailure();
     }
